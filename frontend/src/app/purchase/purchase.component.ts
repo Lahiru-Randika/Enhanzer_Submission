@@ -3,6 +3,17 @@ import { ApiService } from '../services/api.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
+interface PurchaseRow {
+  item: string;
+  batch: string;
+  cost: number;
+  price: number;
+  qty: number;
+  discount: number;
+  totalCost: number;
+  totalSelling: number;
+}
+
 @Component({
   selector: 'app-purchase',
   standalone: true,
@@ -11,74 +22,92 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./purchase.component.css']
 })
 export class PurchaseComponent implements OnInit {
-
-  items = ["Mango","Apple","Banana","Orange","Grapes","Kiwi","Strawberry"];
-  locations:any[] = [];
+  items = ['Mango', 'Apple', 'Banana', 'Orange', 'Grapes', 'Kiwi', 'Strawberry'];
+  locations: any[] = [];
 
   selectedItem = '';
   batch = '';
-  cost = 0;
-  price = 0;
-  qty = 0;
-  discount = 0; // %
+  cost: number | null = null;
+  price: number | null = null;
+  qty: number | null = null;
+  discount: number | null = 0;
+  freeQty: number | null = 0;
 
-  table:any[] = [];
+  table: PurchaseRow[] = [];
 
-  constructor(private api: ApiService){}
+  constructor(private api: ApiService) {}
 
-  ngOnInit(){
-    this.api.getLocations().subscribe((res:any)=> this.locations = res);
+  ngOnInit(): void {
+    this.api.getLocations().subscribe({
+      next: (res: any) => {
+        this.locations = res;
+      },
+      error: () => {
+        this.locations = [];
+      }
+    });
   }
 
-  add(){
+  add(): void {
+    const cost = Number(this.cost ?? 0);
+    const price = Number(this.price ?? 0);
+    const qty = Number(this.qty ?? 0);
+    const discount = Number(this.discount ?? 0);
 
-    const totalCost = this.cost * this.qty;
+    if (!this.selectedItem || !this.batch || cost <= 0 || price <= 0 || qty <= 0) {
+      alert('Please fill all required fields correctly.');
+      return;
+    }
 
-    const grossSelling = this.price * this.qty;
+    // Assignment-style calculation:
+    // Total Cost = (Standard Cost × Quantity) - Discount%
+    const grossCost = cost * qty;
+    const totalCost = grossCost - (grossCost * discount / 100);
 
-    const discountAmount = grossSelling * (this.discount / 100);
-
-    const totalSelling = grossSelling - discountAmount;
+    // Total Selling = Standard Price × Quantity
+    const totalSelling = price * qty;
 
     this.table.push({
       item: this.selectedItem,
       batch: this.batch,
-      cost: this.cost,
-      price: this.price,
-      qty: this.qty,
-      discount: this.discount,
-      totalCost: totalCost,
-      totalSelling: totalSelling
+      cost,
+      price,
+      qty,
+      discount,
+      totalCost,
+      totalSelling
     });
 
-    // reset inputs (optional clean UX)
-    this.selectedItem = '';
-    this.batch = '';
-    this.cost = 0;
-    this.price = 0;
-    this.qty = 0;
-    this.discount = 0;
+    this.resetForm();
   }
 
-  // ✅ SUMMARY
+  resetForm(): void {
+    this.selectedItem = '';
+    this.batch = '';
+    this.cost = null;
+    this.price = null;
+    this.qty = null;
+    this.discount = 0;
+    this.freeQty = 0;
+  }
 
-  get totalItems(){
+  get totalItems(): number {
     return this.table.length;
   }
 
-  get totalQty(){
-    return this.table.reduce((sum, item) => sum + item.qty, 0);
+  get totalQty(): number {
+    return this.table.reduce((sum, row) => sum + row.qty, 0);
   }
 
-  get totalCost(){
-    return this.table.reduce((sum, item) => sum + item.totalCost, 0);
+  get totalCost(): number {
+    return this.table.reduce((sum, row) => sum + row.totalCost, 0);
   }
 
-  get totalSelling(){
-    return this.table.reduce((sum, item) => sum + item.totalSelling, 0);
+  get totalSelling(): number {
+    return this.table.reduce((sum, row) => sum + row.totalSelling, 0);
   }
 
-  get netTotal(){
+  get netTotal(): number {
     return this.totalSelling;
   }
 }

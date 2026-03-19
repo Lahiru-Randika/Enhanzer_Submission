@@ -1,11 +1,8 @@
 <div class="page">
-
-  <!-- TOP HEADER -->
   <div class="topbar">
     <span>Purchase Bill</span>
   </div>
 
-  <!-- TABS -->
   <div class="tabs">
     <span class="active">Header</span>
     <span>Details</span>
@@ -14,69 +11,71 @@
   </div>
 
   <div class="main">
-
-    <!-- LEFT PANEL -->
     <div class="left">
-
-      <!-- INNER TABS -->
       <div class="subtabs">
         <span class="active">Items</span>
         <span>Accounts</span>
         <span>Taxes</span>
       </div>
 
-      <!-- FORM -->
       <div class="form-grid">
-
-  <div class="field">
-    <label>Item *</label>
-    <select [(ngModel)]="selectedItem">
-      <option *ngFor="let i of items">{{i}}</option>
-    </select>
-  </div>
-
         <div class="field">
-            <label>Batch</label>
-            <select [(ngModel)]="batch">
-            <option *ngFor="let l of locations">{{l.location_Name}}</option>
-            </select>
+          <label>Item *</label>
+          <select [(ngModel)]="selectedItem">
+            <option value="">Select item</option>
+            <option *ngFor="let i of items" [value]="i">{{ i }}</option>
+          </select>
         </div>
 
         <div class="field">
-            <label>Standard Cost</label>
-            <input [(ngModel)]="cost" />
+          <label>Batch</label>
+          <select [(ngModel)]="batch">
+            <option value="">Select batch</option>
+            <option *ngFor="let l of locations" [value]="l.location_Name">
+              {{ l.location_Name }}
+            </option>
+          </select>
         </div>
 
         <div class="field">
-            <label>Standard Price <span class="tag">New</span></label>
-            <input [(ngModel)]="price" />
+          <label>Standard Cost</label>
+          <input type="number" [(ngModel)]="cost" />
         </div>
 
         <div class="field">
-            <label>Margin</label>
-            <input disabled placeholder="0.00" />
+          <label>Standard Price <span class="tag">New</span></label>
+          <input type="number" [(ngModel)]="price" />
         </div>
 
         <div class="field">
-            <label>Qty</label>
-            <input [(ngModel)]="qty" />
+          <label>Margin</label>
+          <input
+            type="number"
+            [value]="
+              (price && cost) ? (price - cost) : 0
+            "
+            disabled
+          />
         </div>
 
         <div class="field">
-            <label>Free Qty</label>
-            <input placeholder="0" />
+          <label>Qty</label>
+          <input type="number" [(ngModel)]="qty" />
+        </div>
+
+        <div class="field">
+          <label>Free Qty</label>
+          <input type="number" [(ngModel)]="freeQty" />
         </div>
 
         <div class="field full">
-            <label>Discount</label>
-            <input [(ngModel)]="discount" />
+          <label>Discount (%)</label>
+          <input type="number" [(ngModel)]="discount" />
         </div>
 
-        <button class="add-btn" (click)="add()">Add</button>
+        <button class="add-btn" type="button" (click)="add()">Add</button>
+      </div>
 
-        </div>
-
-      <!-- TABLE -->
       <table>
         <thead>
           <tr>
@@ -93,42 +92,40 @@
 
         <tbody>
           <tr *ngFor="let t of table">
-            <td>{{t.item}}</td>
-            <td>{{t.batch}}</td>
-            <td>{{cost}}</td>
-            <td>{{price}}</td>
-            <td>{{t.qty}}</td>
-            <td>{{discount}}</td>
-            <td>{{t.totalCost}}</td>
-            <td>{{t.totalSelling}}</td>
+            <td>{{ t.item }}</td>
+            <td>{{ t.batch }}</td>
+            <td>{{ t.cost }}</td>
+            <td>{{ t.price }}</td>
+            <td>{{ t.qty }}</td>
+            <td>{{ t.discount }}%</td>
+            <td>{{ t.totalCost }}</td>
+            <td>{{ t.totalSelling }}</td>
+          </tr>
+
+          <tr *ngIf="table.length === 0">
+            <td colspan="8" style="text-align: center;">No items added yet</td>
           </tr>
         </tbody>
       </table>
-
     </div>
 
-    <!-- RIGHT PANEL -->
     <div class="right">
-
       <div class="card">
         <h4>Item Summary</h4>
-        <p>Total Items: {{totalItems}}</p>
-        <p>Total Qty: {{totalQty}}</p>
+        <p>Total Items: {{ totalItems }}</p>
+        <p>Total Qty: {{ totalQty }}</p>
       </div>
 
       <div class="card">
         <h4>Final Summary</h4>
-        <p>Total Cost: {{totalQty * cost}}</p>
-        <p>Total Selling: {{totalQty * price}}</p>
+        <p>Total Cost: {{ totalCost }}</p>
+        <p>Total Selling: {{ totalSelling }}</p>
       </div>
 
       <div class="card total">
         <h3>Net Total</h3>
-        <h2>Rs. {{totalQty * price}}</h2>
+        <h2>Rs. {{ netTotal }}</h2>
       </div>
-
     </div>
-
   </div>
-
 </div>
