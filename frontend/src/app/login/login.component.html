@@ -1,0 +1,27 @@
+<div class="login-container">
+
+  <div class="login-card">
+
+    <h2>Hi</h2>
+
+    <!-- EMAIL -->
+    <div class="input-box">
+      <span class="icon">📧</span>
+      <input [(ngModel)]="email" placeholder="Email*" />
+    </div>
+
+    <!-- PASSWORD -->
+    <div class="input-box">
+      <span class="icon">🔑</span>
+      <input [(ngModel)]="password" [type]="showPassword ? 'text' : 'password'" placeholder="Password*" />
+
+      <span class="eye" (click)="togglePassword()">
+        👁️
+      </span>
+    </div>
+
+    <button (click)="login()">LOGIN</button>
+
+  </div>
+
+</div>

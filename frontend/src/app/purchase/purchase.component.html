@@ -1,0 +1,134 @@
+<div class="page">
+
+  <!-- TOP HEADER -->
+  <div class="topbar">
+    <span>Purchase Bill</span>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <span class="active">Header</span>
+    <span>Details</span>
+    <span>Notes</span>
+    <span>Documents</span>
+  </div>
+
+  <div class="main">
+
+    <!-- LEFT PANEL -->
+    <div class="left">
+
+      <!-- INNER TABS -->
+      <div class="subtabs">
+        <span class="active">Items</span>
+        <span>Accounts</span>
+        <span>Taxes</span>
+      </div>
+
+      <!-- FORM -->
+      <div class="form-grid">
+
+  <div class="field">
+    <label>Item *</label>
+    <select [(ngModel)]="selectedItem">
+      <option *ngFor="let i of items">{{i}}</option>
+    </select>
+  </div>
+
+        <div class="field">
+            <label>Batch</label>
+            <select [(ngModel)]="batch">
+            <option *ngFor="let l of locations">{{l.location_Name}}</option>
+            </select>
+        </div>
+
+        <div class="field">
+            <label>Standard Cost</label>
+            <input [(ngModel)]="cost" />
+        </div>
+
+        <div class="field">
+            <label>Standard Price <span class="tag">New</span></label>
+            <input [(ngModel)]="price" />
+        </div>
+
+        <div class="field">
+            <label>Margin</label>
+            <input disabled placeholder="0.00" />
+        </div>
+
+        <div class="field">
+            <label>Qty</label>
+            <input [(ngModel)]="qty" />
+        </div>
+
+        <div class="field">
+            <label>Free Qty</label>
+            <input placeholder="0" />
+        </div>
+
+        <div class="field full">
+            <label>Discount</label>
+            <input [(ngModel)]="discount" />
+        </div>
+
+        <button class="add-btn" (click)="add()">Add</button>
+
+        </div>
+
+      <!-- TABLE -->
+      <table>
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th>Batch</th>
+            <th>Cost</th>
+            <th>Price</th>
+            <th>Qty</th>
+            <th>Discount</th>
+            <th>Total Cost</th>
+            <th>Total Selling</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let t of table">
+            <td>{{t.item}}</td>
+            <td>{{t.batch}}</td>
+            <td>{{cost}}</td>
+            <td>{{price}}</td>
+            <td>{{t.qty}}</td>
+            <td>{{discount}}</td>
+            <td>{{t.totalCost}}</td>
+            <td>{{t.totalSelling}}</td>
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div class="right">
+
+      <div class="card">
+        <h4>Item Summary</h4>
+        <p>Total Items: {{totalItems}}</p>
+        <p>Total Qty: {{totalQty}}</p>
+      </div>
+
+      <div class="card">
+        <h4>Final Summary</h4>
+        <p>Total Cost: {{totalQty * cost}}</p>
+        <p>Total Selling: {{totalQty * price}}</p>
+      </div>
+
+      <div class="card total">
+        <h3>Net Total</h3>
+        <h2>Rs. {{totalQty * price}}</h2>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
